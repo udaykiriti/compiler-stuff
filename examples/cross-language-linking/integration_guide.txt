@@ -1,0 +1,33 @@
+# Mixing Languages in a Project
+
+There are two main ways to mix languages:
+
+## 1. The High-Level Way (Interfacing)
+Each language runs in its own "world" and talks to others via an API.
+- **Python calling C:** Uses `ctypes` or `CFFI`. The Python interpreter loads a compiled `.so` (shared object) file.
+- **Java calling C:** Uses `JNI`. The JVM loads a `.so` file.
+- **Microservices:** A Python web server talks to a Go backend via HTTP/JSON.
+
+## 2. The Low-Level Way (Linking) - *The LLVM Way*
+This is what `examples/13_cross_language_linking` demonstrates.
+- You compile **C** to LLVM IR (`.bc`).
+- You compile **Rust** to LLVM IR (`.bc`).
+- You compile **C++** to LLVM IR (`.bc`).
+- You **LINK** them all into one giant `.bc` file.
+
+### Why Link LLVM IR?
+**Performance!**
+When you link the IR, the optimizer can see *everything*.
+- It can **Inline** a Rust function into a C loop.
+- It can remove unused code across language boundaries.
+- It produces a single binary with no overhead of "calling between languages".
+
+### Integration Table
+
+| Language | Produces LLVM IR? | Integration Method |
+| :--- | :--- | :--- |
+| **C / C++** | Yes (Clang) | Link `.bc` files directly. |
+| **Rust** | Yes (rustc) | Link `.bc` files directly. |
+| **Swift** | Yes (swiftc) | Link `.bc` files directly. |
+| **Java** | No (Bytecode) | Needs **GraalVM** to produce compatible native code/IR. |
+| **Python** | No (Interpreted) | Needs **Numba** or extension modules to bridge to LLVM. |
