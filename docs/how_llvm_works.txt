@@ -1,0 +1,73 @@
+# How LLVM Works: Under the Hood
+
+LLVM is designed around a modular, three-phase architecture that separates the programming language (source) from the machine hardware (target). This separation is achieved using a common intermediate language called **LLVM IR**.
+
+## 1. The Three-Phase Architecture
+
+### Phase 1: The Frontend (Language Analysis)
+*   **Goal:** Understand the source code and translate it into LLVM IR.
+*   **What happens:**
+    *   **Lexical Analysis:** Breaks code into tokens (keywords, identifiers).
+    *   **Parsing:** Checks grammar and builds an Abstract Syntax Tree (AST).
+    *   **Semantic Analysis:** Checks types and validity.
+    *   **IR Generation:** Converts the AST into LLVM Intermediate Representation.
+*   **Tools:** `clang` (C/C++), `rustc` (Rust), `swiftc` (Swift).
+
+### Phase 2: The Middle-end (The Optimizer)
+*   **Goal:** Improve the code's performance and size without changing its behavior.
+*   **What happens:**
+    *   This phase operates *entirely* on LLVM IR. It doesn't care if the code was originally C or Python.
+    *   It runs a series of "passes".
+    *   **Analysis Passes:** Gather information (e.g., "Is this function ever called?").
+    *   **Transform Passes:** Change the IR (e.g., "Remove this unused function," "Unroll this loop").
+*   **Tools:** `opt`.
+
+### Phase 3: The Backend (Code Generation)
+*   **Goal:** Map the optimized LLVM IR to the instruction set of a specific CPU architecture.
+*   **What happens:**
+    *   **Instruction Selection:** Matches abstract IR operations to real machine instructions (e.g., `add i32` -> `ADD` register).
+    *   **Register Allocation:** Maps virtual registers (infinite supply in IR) to physical CPU registers (limited supply like RAX, R0).
+    *   **Instruction Scheduling:** Reorders instructions to maximize pipeline efficiency.
+    *   **Code Emission:** Writes out the final assembly or binary object file.
+*   **Tools:** `llc`.
+
+---
+
+## 2. The Secret Sauce: LLVM IR
+
+The Intermediate Representation is the "common currency" of LLVM. It looks like a high-level assembly language.
+
+### Key Characteristics:
+1.  **RISC-like Instructions:** Simple operations like `add`, `sub`, `load`, `store`.
+2.  **Typed:** Unlike real assembly, LLVM IR knows about types (`i32`, `float`, `ptr`).
+3.  **Infinite Registers:** It uses virtual registers named `%0`, `%1`, `%name`.
+4.  **SSA (Static Single Assignment):** This is crucial. Every virtual register is assigned a value exactly *once*.
+    *   *Normal Code:* `x = 1; x = 2;`
+    *   *SSA Code:* `x1 = 1; x2 = 2;`
+    *   **Why?** This makes data flow analysis (tracking where values come from) extremely efficient for the optimizer.
+
+### Example:
+**C Source:**
+```c
+int add(int a, int b) {
+    return a + b + 5;
+}
+```
+
+**LLVM IR (simplified):**
+```llvm
+define i32 @add(i32 %a, i32 %b) {
+entry:
+  %sum = add i32 %a, %b    ; Add inputs
+  %result = add i32 %sum, 5 ; Add 5 to sum
+  ret i32 %result           ; Return result
+}
+```
+
+## 3. Why is this design powerful?
+
+*   **Reusability:**
+    *   If you want to create a new language, you only need to write a **Frontend** that outputs LLVM IR. You get the world-class optimizer and backend support (x86, ARM, etc.) for free.
+    *   If you want to support a new CPU architecture, you only need to write a **Backend**. You immediately support C, C++, Rust, Swift, etc.
+
+*   **Modularity:** You can mix and match components easily. The optimizer can be customized by choosing which passes to run.

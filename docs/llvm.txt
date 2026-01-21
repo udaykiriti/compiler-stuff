@@ -1,0 +1,78 @@
+# LLVM Deep Dive Notes
+
+## Core Concepts
+- **LLVM Core:** The heart of the project is the LLVM intermediate representation (IR), a low-level programming language similar to assembly but with high-level type information.
+- **Frontend (e.g., Clang):** Translates source code (C/C++, Rust, etc.) into LLVM IR.
+- **Optimizer (opt):** Optimizes the IR (e.g., dead code elimination, loop unrolling).
+- **Backend (llc):** Translates optimized IR into target-specific machine code (x86, ARM, RISC-V).
+
+## Essential Tools & Commands
+
+### 1. Clang (The Frontend)
+Generate LLVM IR from C source code.
+- `-S`: Only run preprocess and compilation steps.
+- `-emit-llvm`: Emit LLVM IR files.
+```bash
+# Generate human-readable IR (.ll)
+clang -S -emit-llvm source.c -o source.ll
+
+# Generate binary bitcode IR (.bc)
+clang -c -emit-llvm source.c -o source.bc
+```
+
+### 2. llvm-as (Assembler)
+Convert human-readable IR (.ll) to binary bitcode (.bc).
+```bash
+llvm-as source.ll -o source.bc
+```
+
+### 3. llvm-dis (Disassembler)
+Convert binary bitcode (.bc) back to human-readable IR (.ll).
+```bash
+llvm-dis source.bc -o source.ll
+```
+
+### 4. opt (The Optimizer)
+Run optimization passes on LLVM IR.
+- `-O1`, `-O2`, `-O3`: Optimization levels.
+- `-p`: Specify passes (new pass manager syntax).
+```bash
+# Run specific optimizations (e.g., mem2reg)
+opt -S -p mem2reg source.ll -o optimized.ll
+
+# Run standard O3 optimizations
+opt -S -O3 source.ll -o optimized.ll
+```
+
+### 5. llc (The Static Compiler / Backend)
+Compile LLVM IR into assembly language for a specific architecture.
+```bash
+# Compile to assembly (.s) for the host machine
+llc source.ll -o source.s
+
+# Compile to assembly for a specific target (e.g., AArch64)
+llc -march=aarch64 source.ll -o source.s
+```
+
+### 6. lli (The Interpreter / JIT)
+Directly execute LLVM bitcode using the JIT compiler.
+```bash
+lli source.bc
+```
+
+### 7. llvm-link (Linker)
+Link multiple bitcode files into a single one.
+```bash
+llvm-link a.bc b.bc -o combined.bc
+```
+
+## Typical Workflow
+1. **Source to IR:** `clang -S -emit-llvm main.c -o main.ll`
+2. **Optimize:** `opt -S -O3 main.ll -o main_opt.ll`
+3. **IR to Assembly:** `llc main_opt.ll -o main.s`
+4. **Assembly to Executable:** `clang main.s -o main`
+
+## Key Terms
+- **SSA (Static Single Assignment):** Every variable is assigned exactly once. This simplifies data flow analysis.
+- **Basic Block:** A sequence of instructions with one entry and one exit.
+- **Pass Manager:** The framework that schedules and runs optimization and analysis passes.

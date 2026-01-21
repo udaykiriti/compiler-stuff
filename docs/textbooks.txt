@@ -1,0 +1,23 @@
+# Recommended LLVM & Compiler Textbooks
+
+## LLVM Specific Books
+- **Learn LLVM 17 (or latest version)** by Kai Nacke
+  - A hands-on guide to learning LLVM by building a compiler frontend.
+- **Getting Started with LLVM Core Libraries** by Bruno Cardoso Lopes and Rafael Auler
+  - Provides a deep dive into the LLVM infrastructure, including the IR, Bitcode, and backend.
+- **LLVM Essentials** by Suyog Sarda and Mayur Pandey
+  - A practical, project-oriented guide to learning LLVM.
+
+## General Compiler Theory
+- **Engineering a Compiler** by Keith Cooper and Linda Torczon
+  - Excellent for understanding the algorithms used in the middle-end and backend.
+- **Compilers: Principles, Techniques, and Tools (The Dragon Book)** by Aho, Lam, Sethi, and Ullman
+  - The classic textbook for frontend analysis and general compiler theory.
+
+## Online Resources & Tutorials
+- **LLVM Kaleidoscope Tutorial** (Official Docs)
+  - The best starting point for building your first language with LLVM.
+- **The Architecture of Open Source Applications: LLVM** by Chris Lattner
+  - A high-level overview of the design philosophy behind LLVM.
+- **Mapping High-Level Constructs to LLVM IR**
+  - An essential community-maintained guide for seeing how C++ features map to IR.
