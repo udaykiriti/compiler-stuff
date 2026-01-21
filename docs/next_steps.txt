@@ -1,0 +1,36 @@
+# Beyond LLVM: Recommended Tools for Systems Engineers
+
+Since you have a solid grasp of LLVM, here are the best tools to learn next to round out your skills in systems programming, compilers, and low-level optimization.
+
+## 1. Advanced Debugging & Profiling
+**Tools:** `perf`, `FlameGraphs`, `rr`
+
+*   **Why:** LLVM makes code fast, but you need to know *where* to optimize.
+*   **perf (Linux):** The gold standard for profiling on Linux. It can tell you exactly which assembly instruction is causing cache misses.
+*   **FlameGraphs:** Visualization tool that turns `perf` output into interactive charts to find bottlenecks instantly.
+*   **rr (Record & Replay):** A debugger that lets you record a crash and "step backwards" in time. It changes debugging from a detective game into a movie rewinder.
+
+## 2. Binary Analysis & Reverse Engineering
+**Tools:** `Ghidra`, `Radare2`
+
+*   **Why:** Sometimes you don't have the source code. These tools decompile binaries back into C-like code (often using LLVM internals in reverse!).
+*   **Ghidra:** The NSA's open-source reverse engineering suite. It’s the industry standard for analyzing malware or closed-source libraries.
+*   **Radare2:** A powerful CLI-based framework for reverse engineering. It feels like "Vim for binaries."
+
+## 3. WebAssembly (WASM) & WABT
+**Tools:** `wat2wasm`, `wasm-objdump`
+
+*   **Why:** WASM is the "LLVM IR of the Web." It’s a stack-based virtual machine that runs in browsers.
+*   **Connection:** You can compile LLVM IR *to* WASM. Understanding WASM gives you the full picture of modern compilation targets (Native vs. Web).
+
+## 4. Symbolic Execution
+**Tools:** `KLEE`
+
+*   **Why:** Instead of running your code with one input, KLEE runs it with *all possible inputs* mathematically.
+*   **Connection:** KLEE is built **on top of LLVM**. It interprets LLVM IR to find bugs (like buffer overflows) that no human test suite could ever find.
+
+## 5. Modern Parsing
+**Tools:** `Tree-sitter`
+
+*   **Why:** If LLVM is the "Backend" king, Tree-sitter is becoming the "Frontend" king.
+*   **What it does:** It enables real-time, incremental parsing. It's used by text editors (NeoVim, VS Code, GitHub) to provide syntax highlighting and code navigation that never breaks, even while you are typing.
