@@ -1,0 +1,13 @@
+# LLVM Build Artifacts
+*.bc
+*.s
+*.o
+*.out
+
+# Generated IR (if you only want to keep source IR)
+# optimized.ll
+# source.ll
+
+# OS generated files
+.DS_Store
+Thumbs.db
