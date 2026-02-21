@@ -1,7 +1,7 @@
 // main.c
 #include <stdio.h>
 
-// Declare external functions
+// Declare external funcs.
 int c_multiply(int a, int b);
 int rust_add(int a, int b);
 

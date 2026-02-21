@@ -1,6 +1,6 @@
 #![no_std]
 
-// We need to define a panic handler because we aren't using the standard library.
+// We need to define a panic handler because we aren't using the standard lib.
 use core::panic::PanicInfo;
 
 #[panic_handler]
