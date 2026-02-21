@@ -56,8 +56,9 @@ The examples are categorized to guide your learning from basic to advanced:
 You will need the LLVM toolchain installed (LLVM, Clang).
 
 **Option A: Local Installation (Ubuntu/Debian)**
+
 ```bash
-sudo apt-get install llvm clang cmake build-essential
+sudo zypper install llvm clang cmake gcc gcc-c++ make #depends on ur pckg mngr
 ```
 
 **Option B: Docker (Recommended if you don't want to install locally)**
