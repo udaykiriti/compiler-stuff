@@ -17,6 +17,15 @@ examples/**  linguist-vendored=false linguist-detectable=true
 *.ll    text eol=lf linguist-detectable=true linguist-generated=false linguist-language=LLVM
 *.td    text eol=lf linguist-detectable=true linguist-generated=false linguist-language=TableGen
 
+# Compiler-generated LLVM IR (excluded from language stats)
+examples/mixed-languages/example_c.ll    linguist-generated=true
+examples/mixed-languages/example_cpp.ll  linguist-generated=true
+examples/mixed-languages/example_rust.ll linguist-generated=true
+examples/basics/source.ll               linguist-generated=true
+examples/basics/optimized.ll            linguist-generated=true
+examples/linking-lto/linked.ll          linguist-generated=true
+examples/metadata/debug_me.ll           linguist-generated=true
+
 # Docs / config
 *.md    text eol=lf linguist-documentation=true
 *.txt   text eol=lf linguist-documentation=true
