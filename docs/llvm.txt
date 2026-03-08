@@ -1,78 +1,220 @@
-# LLVM Deep Dive Notes
+LLVM COMMAND REFERENCE (PRACTICAL)
 
-## Core Concepts
-- **LLVM Core:** The heart of the project is the LLVM intermediate representation (IR), a low-level programming language similar to assembly but with high-level type information.
-- **Frontend (e.g., Clang):** Translates source code (C/C++, Rust, etc.) into LLVM IR.
-- **Optimizer (opt):** Optimizes the IR (e.g., dead code elimination, loop unrolling).
-- **Backend (llc):** Translates optimized IR into target-specific machine code (x86, ARM, RISC-V).
+Purpose:
+This file is a quick command guide for common LLVM and Clang workflows.
+Use it while working through docs/roadmap.txt and examples/.
 
-## Essential Tools & Commands
+CORE TOOLCHAIN OVERVIEW
+1. clang
+   - Frontend compiler (source code -> LLVM IR/object/executable).
+2. llvm-as
+   - Assembler for LLVM IR text (.ll -> .bc).
+3. llvm-dis
+   - Disassembler for bitcode (.bc -> .ll).
+4. opt
+   - Runs LLVM analysis and optimization passes on IR.
+5. llc
+   - Lowers LLVM IR to target assembly/object.
+6. lli
+   - Executes LLVM bitcode/IR using interpreter/JIT.
+7. llvm-link
+   - Links multiple LLVM bitcode modules.
+8. llvm-nm / nm
+   - Symbol inspection.
 
-### 1. Clang (The Frontend)
-Generate LLVM IR from C source code.
-- `-S`: Only run preprocess and compilation steps.
-- `-emit-llvm`: Emit LLVM IR files.
-```bash
-# Generate human-readable IR (.ll)
-clang -S -emit-llvm source.c -o source.ll
+BASIC FILE TYPES
+1. .c / .cpp / .rs
+   - Source files.
+2. .ll
+   - Human-readable LLVM IR text.
+3. .bc
+   - LLVM bitcode (binary IR).
+4. .s
+   - Assembly.
+5. .o
+   - Object file.
+6. executable
+   - Linked final binary.
 
-# Generate binary bitcode IR (.bc)
-clang -c -emit-llvm source.c -o source.bc
-```
+VERSION CHECK
+1. clang --version
+2. opt --version
+3. llc --version
+4. llvm-as --version
+5. llvm-dis --version
 
-### 2. llvm-as (Assembler)
-Convert human-readable IR (.ll) to binary bitcode (.bc).
-```bash
-llvm-as source.ll -o source.bc
-```
+CLANG COMMANDS
 
-### 3. llvm-dis (Disassembler)
-Convert binary bitcode (.bc) back to human-readable IR (.ll).
-```bash
-llvm-dis source.bc -o source.ll
-```
+Generate LLVM IR (.ll):
+1. clang -S -emit-llvm source.c -o source.ll
 
-### 4. opt (The Optimizer)
-Run optimization passes on LLVM IR.
-- `-O1`, `-O2`, `-O3`: Optimization levels.
-- `-p`: Specify passes (new pass manager syntax).
-```bash
-# Run specific optimizations (e.g., mem2reg)
-opt -S -p mem2reg source.ll -o optimized.ll
+Generate bitcode (.bc):
+2. clang -c -emit-llvm source.c -o source.bc
 
-# Run standard O3 optimizations
-opt -S -O3 source.ll -o optimized.ll
-```
+Generate IR with optimization level:
+3. clang -S -emit-llvm -O0 source.c -o o0.ll
+4. clang -S -emit-llvm -O2 source.c -o o2.ll
+5. clang -S -emit-llvm -O3 source.c -o o3.ll
 
-### 5. llc (The Static Compiler / Backend)
-Compile LLVM IR into assembly language for a specific architecture.
-```bash
-# Compile to assembly (.s) for the host machine
-llc source.ll -o source.s
+Generate debug-friendly IR:
+6. clang -S -emit-llvm -g -O0 source.c -o debug.ll
 
-# Compile to assembly for a specific target (e.g., AArch64)
-llc -march=aarch64 source.ll -o source.s
-```
+Generate object file directly:
+7. clang -c source.c -o source.o
 
-### 6. lli (The Interpreter / JIT)
-Directly execute LLVM bitcode using the JIT compiler.
-```bash
-lli source.bc
-```
+Assemble/link from assembly:
+8. clang source.s -o app
 
-### 7. llvm-link (Linker)
-Link multiple bitcode files into a single one.
-```bash
-llvm-link a.bc b.bc -o combined.bc
-```
+LLVM-AS / LLVM-DIS
 
-## Typical Workflow
-1. **Source to IR:** `clang -S -emit-llvm main.c -o main.ll`
-2. **Optimize:** `opt -S -O3 main.ll -o main_opt.ll`
-3. **IR to Assembly:** `llc main_opt.ll -o main.s`
-4. **Assembly to Executable:** `clang main.s -o main`
+Assemble text IR to bitcode:
+1. llvm-as source.ll -o source.bc
 
-## Key Terms
-- **SSA (Static Single Assignment):** Every variable is assigned exactly once. This simplifies data flow analysis.
-- **Basic Block:** A sequence of instructions with one entry and one exit.
-- **Pass Manager:** The framework that schedules and runs optimization and analysis passes.
+Disassemble bitcode to text IR:
+2. llvm-dis source.bc -o source.ll
+
+Round-trip check workflow:
+3. llvm-as input.ll -o round.bc
+4. llvm-dis round.bc -o round.ll
+5. diff -u input.ll round.ll
+
+OPT (OPTIMIZATION AND PASSES)
+
+Run default optimization levels:
+1. opt -S -O1 source.ll -o opt_o1.ll
+2. opt -S -O2 source.ll -o opt_o2.ll
+3. opt -S -O3 source.ll -o opt_o3.ll
+
+Run specific passes (syntax may vary by LLVM version):
+4. opt -S -mem2reg source.ll -o mem2reg.ll
+5. opt -S -instcombine source.ll -o instcombine.ll
+6. opt -S -loop-vectorize -slp-vectorizer source.ll -o vec.ll
+
+New pass manager style (if supported):
+7. opt -S -passes=mem2reg source.ll -o mem2reg.ll
+8. opt -S -passes='default<O2>' source.ll -o opt_o2.ll
+
+Inspect pass pipeline/debug output (version dependent):
+9. opt -O2 -disable-output -debug-pass-manager source.ll
+
+Verify IR:
+10. opt -verify source.ll -disable-output
+
+LLC (BACKEND CODE GENERATION)
+
+Emit assembly for host target:
+1. llc source.ll -o source.s
+
+Emit object file:
+2. llc -filetype=obj source.ll -o source.o
+
+Emit assembly for specific target arch:
+3. llc -march=x86-64 source.ll -o x86.s
+4. llc -march=aarch64 source.ll -o arm64.s
+
+Set target triple explicitly:
+5. llc -mtriple=x86_64-pc-linux-gnu source.ll -o out.s
+
+LLI (RUN IR/BITCODE)
+
+Execute bitcode directly:
+1. lli source.bc
+
+Execute IR text directly (supported in many builds):
+2. lli source.ll
+
+LLVM-LINK (MODULE LINKING)
+
+Link multiple bitcode modules:
+1. llvm-link a.bc b.bc -o combined.bc
+
+Disassemble linked output for inspection:
+2. llvm-dis combined.bc -o combined.ll
+
+SYMBOL AND CONTENT INSPECTION
+
+Show symbols:
+1. llvm-nm file.o
+2. nm file.o
+
+Show section/headers (if needed):
+3. llvm-readobj -h file.o
+
+Show textual IR quickly:
+4. sed -n '1,120p' file.ll
+
+COMMON WORKFLOWS
+
+Workflow A: Source -> Optimized IR -> Assembly -> Executable
+1. clang -S -emit-llvm source.c -o source.ll
+2. opt -S -O2 source.ll -o source_opt.ll
+3. llc source_opt.ll -o source.s
+4. clang source.s -o app
+
+Workflow B: Source -> Bitcode -> Optimize -> Run with lli
+1. clang -c -emit-llvm source.c -o source.bc
+2. opt -O2 source.bc -o source_opt.bc
+3. lli source_opt.bc
+
+Workflow C: Link multiple modules at IR level
+1. clang -c -emit-llvm a.c -o a.bc
+2. clang -c -emit-llvm b.c -o b.bc
+3. llvm-link a.bc b.bc -o ab.bc
+4. opt -O2 ab.bc -o ab_opt.bc
+5. llc ab_opt.bc -o ab.s
+6. clang ab.s -o app
+
+DEBUG AND SANITIZER FLAGS (CLANG)
+
+1. AddressSanitizer:
+   clang -fsanitize=address -g -O1 buggy.c -o buggy_asan
+2. UndefinedBehaviorSanitizer:
+   clang -fsanitize=undefined -g test.c -o test_ubsan
+3. ThreadSanitizer:
+   clang -fsanitize=thread -g race.c -o race_tsan
+
+PERFORMANCE/DIAGNOSTIC FLAGS
+
+1. Emit optimization remarks:
+   clang -O2 -Rpass=. source.c -c
+2. Save intermediate compilation files:
+   clang -save-temps source.c -o app
+3. Show invoked backend/frontend commands:
+   clang -### source.c
+
+COMMON ERRORS AND FIXES
+
+1. Error: "opt: Unknown command line argument"
+   - Cause: pass syntax differs across LLVM versions.
+   - Fix: try both legacy and new pass manager forms.
+
+2. Error: "expected top-level entity" in .ll
+   - Cause: malformed IR syntax.
+   - Fix: run llvm-as to get exact parser location.
+
+3. Error: target mismatch or weird codegen output
+   - Cause: wrong target triple/arch.
+   - Fix: set -mtriple or -march explicitly.
+
+4. Different output than documentation
+   - Cause: LLVM version differences.
+   - Fix: compare tool versions first.
+
+COMMAND CHEAT SHEET
+
+1. source.c -> source.ll
+   clang -S -emit-llvm source.c -o source.ll
+2. source.ll -> source.bc
+   llvm-as source.ll -o source.bc
+3. source.bc -> source.ll
+   llvm-dis source.bc -o source.ll
+4. source.ll -> optimized.ll
+   opt -S -O2 source.ll -o optimized.ll
+5. optimized.ll -> source.s
+   llc optimized.ll -o source.s
+6. source.s -> app
+   clang source.s -o app
+
+LEARNING TIP
+
+Do not memorize every flag. Learn by running one workflow repeatedly and inspecting each intermediate file.
