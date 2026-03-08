@@ -1,0 +1,369 @@
+LLVM LEARNING ROADMAP (BASICS TO ADVANCED)
+
+This roadmap is topic-wise and detailed. Move to the next topic only after passing the completion checks.
+
+PREREQUISITES
+1. Comfortable with C programming basics (functions, pointers, loops, structs).
+2. Basic Linux command-line usage.
+3. Basic understanding of assembly language concepts is helpful (registers, stack, branching).
+4. LLVM and Clang installed and available in PATH.
+
+RECOMMENDED TOOLING CHECK
+1. Check tool versions:
+   - clang --version
+   - opt --version
+   - llc --version
+   - llvm-as --version
+   - llvm-dis --version
+2. Keep one terminal for build commands and one terminal for inspection/diff commands.
+
+TOPIC 1: LLVM ARCHITECTURE AND TOOLCHAIN BASICS
+Objective: Build a mental model of how LLVM is structured and which tools are used at each stage.
+
+What to read:
+1. docs/flow.txt
+2. docs/llvm.txt
+
+Core ideas:
+1. Frontend: parses source language and emits LLVM IR.
+2. Middle-end: applies analysis and optimization passes on IR.
+3. Backend: lowers IR to machine code for target architecture.
+4. Text IR (.ll) vs bitcode (.bc), and when to use each.
+5. Compilation pipeline from source file to executable.
+
+Hands-on tasks:
+1. Run basic pipeline:
+   - cd examples/basics
+   - ./run.sh
+2. Manually generate files:
+   - clang -S -emit-llvm source.c -o source.ll
+   - clang -c -emit-llvm source.c -o source.bc
+   - opt -S -O2 source.ll -o optimized.ll
+   - llc optimized.ll -o output.s
+3. Compare source and generated assembly:
+   - Identify at least two optimizations in output.
+4. Round-trip conversion practice:
+   - llvm-dis source.bc -o from_bc.ll
+   - llvm-as from_bc.ll -o rebuilt.bc
+
+Common mistakes:
+1. Confusing IR text (.ll) with bitcode (.bc).
+2. Running opt on source C file directly.
+3. Assuming backend (llc) performs high-level optimizations.
+
+Completion check:
+1. You can explain what clang, opt, llc, llvm-as, and llvm-dis do.
+2. You can produce .ll, .bc, and .s from a C file.
+3. You can explain when to inspect IR vs assembly.
+
+TOPIC 2: LLVM IR SYNTAX AND SEMANTICS
+Objective: Read and write small IR snippets correctly.
+
+What to read:
+1. docs/ir_syntax.txt
+
+Core ideas:
+1. Module, function, basic block structure.
+2. Type system (i1, i8, i32, pointers, arrays, structs).
+3. SSA form and value naming.
+4. Memory instructions: alloca, load, store.
+5. Arithmetic and comparison ops.
+6. Branching: br, icmp, conditional flow.
+7. Function calls, calling conventions, and return values.
+
+Hands-on tasks:
+1. Open and inspect:
+   - examples/basics/source.ll
+   - examples/basics/manual.ll
+2. Add one arithmetic instruction to manual.ll and re-run:
+   - llvm-as manual.ll -o manual.bc
+   - llvm-dis manual.bc -o roundtrip.ll
+3. Confirm round-trip correctness by diffing:
+   - diff -u manual.ll roundtrip.ll
+4. Add one conditional branch and verify block labels are valid.
+
+Common mistakes:
+1. Type mismatch in arithmetic instructions.
+2. Using values before definition.
+3. Missing terminator instruction in a basic block.
+
+Completion check:
+1. You can describe every instruction in a simple function.
+2. You can assemble/disassemble IR without errors.
+3. You can fix a basic verifier error in custom IR.
+
+TOPIC 3: CONTROL FLOW, SSA, AND MEMORY ADDRESSING
+Objective: Understand data flow at joins and how complex memory is addressed.
+
+Where to study:
+1. examples/control-flow/loop.ll
+2. examples/structs/structs.ll
+
+Core ideas:
+1. Phi nodes at control-flow merge points.
+2. Loop headers, latches, and exits.
+3. getelementptr (GEP) for array/struct field addressing.
+4. Distinction between pointer arithmetic and memory access.
+5. Dominance and why SSA values require proper definition paths.
+
+Hands-on tasks:
+1. Trace loop execution in loop.ll block by block.
+2. Draw CFG for loop.ll (entry, loop, exit).
+3. For structs.ll, identify:
+   - base pointer
+   - field offsets addressed by GEP
+   - final load/store using computed pointers
+4. Rewrite one loop condition and verify phi correctness.
+
+Common mistakes:
+1. Incorrect incoming blocks in phi nodes.
+2. Misreading GEP indices as byte offsets.
+3. Breaking CFG by missing branch target updates.
+
+Completion check:
+1. You can explain why phi nodes are required in SSA.
+2. You can manually decode a GEP path for a nested struct/array.
+3. You can fix an invalid phi after CFG edits.
+
+TOPIC 4: OPTIMIZATION PASSES AND PERFORMANCE REASONING
+Objective: Learn how passes transform IR and why transformations are safe.
+
+Where to study:
+1. examples/vectorization/vectorize_me.c
+2. examples/basics/source.c
+
+Core ideas:
+1. Optimization levels (-O0, -O1, -O2, -O3) and tradeoffs.
+2. Canonicalization vs aggressive optimization.
+3. Dead code elimination, constant folding, inlining, loop optimizations.
+4. Vectorization preconditions and limits.
+5. Analysis passes vs transformation passes.
+
+Hands-on tasks:
+1. Generate IR at multiple optimization levels:
+   - clang -S -emit-llvm -O0 vectorize_me.c -o o0.ll
+   - clang -S -emit-llvm -O3 vectorize_me.c -o o3.ll
+2. Compare:
+   - diff -u o0.ll o3.ll
+3. Run selected passes manually:
+   - opt -S -mem2reg o0.ll -o mem2reg.ll
+   - opt -S -loop-vectorize -slp-vectorizer mem2reg.ll -o vec.ll
+4. List pass pipeline (if available in your LLVM version):
+   - opt -O2 -disable-output -debug-pass-manager o0.ll
+
+Common mistakes:
+1. Assuming all loops vectorize automatically.
+2. Measuring performance without disabling debug builds.
+3. Equating fewer IR instructions with always faster code.
+
+Completion check:
+1. You can point to concrete IR changes caused by optimization.
+2. You can explain at least one pass precondition.
+3. You can identify one optimization that did not apply and why.
+
+TOPIC 5: FRONTEND PIPELINE AND AST TO IR
+Objective: Connect source-language syntax trees to LLVM IR generation.
+
+Where to study:
+1. examples/frontend/ast_demo.c
+2. examples/frontend/dump_ast.sh
+
+Core ideas:
+1. AST as frontend representation.
+2. Semantic analysis before IR emission.
+3. Mapping high-level constructs (if/for/function call) into basic blocks and instructions.
+4. Source-level constructs that disappear in lowered IR.
+
+Hands-on tasks:
+1. Dump and inspect AST for ast_demo.c.
+2. Generate IR for same file and compare:
+   - which AST nodes map to which IR patterns
+3. Modify source with one extra branch and re-check both AST and IR.
+4. Add a struct and examine resulting IR types.
+
+Completion check:
+1. You can map one AST branch node to corresponding IR branch structure.
+2. You can explain one semantic check done before IR generation.
+
+TOPIC 6: MULTI-LANGUAGE IR AND LINKING
+Objective: Understand LLVM as a common compilation layer across languages.
+
+Where to study:
+1. examples/polyglot/
+2. examples/mixed-languages/
+3. examples/cross-language-linking/
+
+Core ideas:
+1. How Rust/C/C++ produce LLVM IR with different naming/runtime patterns.
+2. ABI basics for cross-language calls.
+3. Bitcode linking vs object linking.
+4. Symbol visibility and name mangling.
+
+Hands-on tasks:
+1. Generate Rust IR:
+   - cd examples/polyglot
+   - ./run_rust.sh
+2. Compare C/C++/Rust IR from mixed examples.
+3. Run cross-language integration flow:
+   - cd examples/cross-language-linking
+   - ./build.sh
+4. Inspect symbols:
+   - nm <binary_or_object>
+
+Common mistakes:
+1. Function signature mismatch across language boundaries.
+2. Ignoring extern "C" requirements for C++/Rust interop.
+3. Mixing incompatible target triples.
+
+Completion check:
+1. You can explain one ABI-related constraint in cross-language linking.
+2. You can build and run a mixed-language output binary.
+3. You can identify one mangled symbol and its source function.
+
+TOPIC 7: LTO, WHOLE-PROGRAM VIEW, AND MODULE LINKING
+Objective: Learn how optimization improves when compiler sees multiple modules.
+
+Where to study:
+1. examples/linking-lto/run_lto.sh
+2. examples/linking-lto/library.c
+3. examples/linking-lto/main.c
+
+Core ideas:
+1. llvm-link and whole-module optimization.
+2. Symbol visibility and inlining opportunities across files.
+3. Practical effect of LTO on dead code and call boundaries.
+4. Why separate compilation can block some optimizations.
+
+Hands-on tasks:
+1. Build with and without LTO flow.
+2. Inspect merged IR (linked.ll) and locate functions from both modules.
+3. Check if cross-file call sites were simplified/inlined.
+4. Compare binary size and note differences.
+
+Completion check:
+1. You can explain why some optimizations require whole-program visibility.
+2. You can show one cross-file optimization made possible by linking IR.
+
+TOPIC 8: DEBUG METADATA AND SANITIZERS
+Objective: Use compiler-generated metadata and instrumentation for debugging and safety.
+
+Where to study:
+1. examples/metadata/debug_me.c
+2. examples/metadata/generate_debug.sh
+3. examples/sanitizers/buggy.c
+4. examples/sanitizers/run_asan.sh
+
+Core ideas:
+1. DWARF debug metadata attached to IR.
+2. AddressSanitizer instrumentation and error reporting model.
+3. Difference between correctness bugs and performance issues.
+4. Compile flags that improve diagnostics (-g, -O0 for debugging).
+
+Hands-on tasks:
+1. Generate IR with -g and locate debug metadata nodes.
+2. Run ASan example and capture reported failure.
+3. Fix bug in buggy.c and verify sanitizer clean run.
+4. Re-run with optimization enabled and compare stack traces.
+
+Completion check:
+1. You can locate debug metadata in IR.
+2. You can interpret an ASan stack/error summary.
+3. You can reproduce and verify a bug fix.
+
+TOPIC 9: INTRINSICS AND INLINE ASSEMBLY
+Objective: Understand low-level escape hatches and when to avoid them.
+
+Where to study:
+1. examples/intrinsics/intrinsics.ll
+2. examples/inline-asm/asm.ll
+
+Core ideas:
+1. LLVM intrinsics as target-aware builtin operations.
+2. Inline asm constraints and portability costs.
+3. Optimization visibility differences between intrinsics and opaque asm.
+4. Target-specific behavior and fallback design.
+
+Hands-on tasks:
+1. Inspect intrinsic signatures and call sites.
+2. Compile asm.ll and inspect generated assembly.
+3. Replace one inline asm pattern with intrinsic (if possible) and compare.
+4. Benchmark both versions in a micro test.
+
+Completion check:
+1. You can describe one case where intrinsic is preferred over inline asm.
+2. You can describe one case where inline asm is unavoidable.
+
+TOPIC 10: WRITING AND RUNNING CUSTOM LLVM PASSES
+Objective: Extend LLVM with your own analysis or transformation logic.
+
+Where to study:
+1. examples/passes/HelloPass.cpp
+2. examples/passes/CMakeLists.txt
+
+Core ideas:
+1. Pass manager lifecycle.
+2. Function pass responsibilities and constraints.
+3. Preserving analyses and avoiding invalid transformations.
+4. Testing passes on small and large IR inputs.
+
+Hands-on tasks:
+1. Build pass shared library from examples/passes.
+2. Run pass on sample bitcode:
+   - opt -load ./HelloPass.so -hello < input.bc > /dev/null
+3. Extend pass:
+   - count basic blocks or instruction kinds per function
+4. Add debug prints and validate deterministic output.
+
+Completion check:
+1. You can compile, load, and execute your custom pass.
+2. You can implement a small analysis and print stable output.
+3. You can explain whether your pass preserves CFG/analyses.
+
+TOPIC 11: BACKEND AND TABLEGEN FUNDAMENTALS (ADVANCED)
+Objective: Understand how IR is lowered into target-specific machine instructions.
+
+Where to study:
+1. examples/tablegen/target.td
+
+Core ideas:
+1. Instruction selection overview.
+2. Register classes and operand constraints.
+3. Role of TableGen in declarative backend descriptions.
+4. Scheduling and register allocation at a high level.
+
+Hands-on tasks:
+1. Run tablegen script:
+   - cd examples/tablegen
+   - ./run_tblgen.sh
+2. Inspect generated outputs and map entries back to target.td.
+3. Use llc with different targets and inspect emitted assembly differences.
+4. Modify one TableGen record and regenerate output.
+
+Completion check:
+1. You can explain how TableGen definitions participate in backend generation.
+2. You can identify at least one generated artifact from a TableGen change.
+
+CAPSTONE MINI PROJECTS
+1. IR reading capstone:
+   - Take one non-trivial C function and hand-annotate every IR block and variable flow.
+2. Optimization capstone:
+   - Create a compute kernel, compile at O0/O3, and explain three optimization changes.
+3. Pass capstone:
+   - Build a pass that reports function complexity metrics.
+4. Interop capstone:
+   - Link C and Rust modules and document ABI decisions.
+
+SELF-EVALUATION CHECKLIST
+1. I can read and explain unfamiliar LLVM IR without help.
+2. I can run and inspect pass effects using opt.
+3. I can debug basic verifier failures in custom IR.
+4. I can build and run a custom pass.
+5. I can explain a high-level path from source code to machine code.
+
+FINAL COMPETENCY TARGETS
+By the end, you should be able to:
+1. Generate, inspect, and modify LLVM IR with confidence.
+2. Explain optimization effects with concrete IR evidence.
+3. Build and run a custom LLVM pass.
+4. Diagnose bugs using debug metadata and sanitizers.
+5. Describe the IR-to-machine-code lowering path at a high level.

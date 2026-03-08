@@ -1,0 +1,134 @@
+LLVM REPOSITORY GUIDE
+
+Purpose:
+This repository is a practical LLVM learning workspace. It is designed to take you from basic IR generation to advanced topics like custom passes, LTO, sanitizers, and TableGen.
+
+Who this is for:
+1. Beginners learning compiler internals.
+2. Developers who want hands-on LLVM practice.
+3. Students preparing for compiler projects or research.
+
+REPOSITORY LAYOUT
+
+Top-level directories:
+1. docs/
+   - Plain-text learning material, references, roadmap, and command notes.
+2. examples/
+   - Hands-on code and scripts grouped by concept.
+
+Important docs files:
+1. docs/roadmap.txt
+   - Detailed topic-wise learning path from basics to advanced.
+2. docs/references.txt
+   - Curated links: official docs, Stack Overflow/Stack Exchange, university material, articles.
+3. docs/llvm.txt
+   - Frequently used LLVM/Clang command reference.
+4. docs/ir_syntax.txt
+   - LLVM IR syntax essentials.
+5. docs/flow.txt
+   - High-level LLVM pipeline and architecture notes.
+6. docs/textbooks.txt
+   - Recommended books.
+
+EXAMPLES DIRECTORY GUIDE
+
+1. examples/basics/
+   - Learn the standard source -> IR -> optimized IR -> assembly flow.
+   - Start here first.
+
+2. examples/control-flow/
+   - Study loops/branches and phi nodes in SSA form.
+
+3. examples/structs/
+   - Understand memory layout and getelementptr usage.
+
+4. examples/vectorization/
+   - Explore optimization and auto-vectorization behavior.
+
+5. examples/passes/
+   - Build and run a custom LLVM pass.
+
+6. examples/frontend/
+   - See AST generation and frontend behavior before IR emission.
+
+7. examples/intrinsics/
+   - Learn LLVM intrinsics such as llvm.ctpop and llvm.memcpy.
+
+8. examples/metadata/
+   - Generate and inspect debug metadata.
+
+9. examples/linking-lto/
+   - Understand IR/module linking and LTO-style workflow.
+
+10. examples/inline-asm/
+    - Use inline assembly in LLVM IR and inspect target code output.
+
+11. examples/polyglot/
+    - Generate LLVM IR from Rust and compare with C/C++ patterns.
+
+12. examples/mixed-languages/
+    - Compare language outputs and integration differences.
+
+13. examples/cross-language-linking/
+    - Build mixed-language binaries (for example, C + Rust).
+
+14. examples/sanitizers/
+    - Detect memory issues with AddressSanitizer.
+
+15. examples/tablegen/
+    - Intro-level backend/TableGen definitions.
+
+SUGGESTED START ORDER
+
+1. Read docs/flow.txt and docs/llvm.txt.
+2. Run examples/basics/run.sh.
+3. Read docs/ir_syntax.txt and inspect examples/control-flow/loop.ll.
+4. Continue with docs/roadmap.txt topic by topic.
+
+QUICK START COMMANDS
+
+1. Run the basics pipeline:
+   cd examples/basics
+   ./run.sh
+
+2. Generate IR manually from a C file:
+   clang -S -emit-llvm source.c -o source.ll
+
+3. Optimize IR:
+   opt -S -O2 source.ll -o optimized.ll
+
+4. Lower optimized IR to assembly:
+   llc optimized.ll -o output.s
+
+5. Build custom pass example:
+   cd examples/passes
+   mkdir -p build && cd build
+   cmake ..
+   make
+
+ENVIRONMENT NOTES
+
+1. Install LLVM + Clang toolchain and ensure commands are in PATH.
+2. Use exact tool versions consistently when comparing outputs.
+3. If output differs from docs, first check LLVM version differences.
+
+COMMON ISSUES
+
+1. File extension confusion:
+   - .ll = human-readable IR
+   - .bc = LLVM bitcode
+
+2. Command misuse:
+   - opt works on LLVM IR/bitcode, not directly on .c source files.
+
+3. Version mismatch:
+   - Different LLVM versions may produce different IR formatting or pass results.
+
+LEARNING OUTCOMES
+
+After working through this repository, you should be able to:
+1. Generate and inspect LLVM IR.
+2. Understand how optimization passes transform code.
+3. Build and run a simple custom LLVM pass.
+4. Use metadata and sanitizers for debugging.
+5. Explain the path from source code to target machine code.

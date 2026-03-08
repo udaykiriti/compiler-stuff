@@ -1,0 +1,197 @@
+WHAT TO LEARN AFTER LLVM (NEXT STEPS)
+
+Purpose:
+You now know LLVM basics. This guide lists high-value adjacent tools and domains to become strong in systems/compiler engineering.
+
+HOW TO USE THIS FILE
+1. Pick one track based on your goal (performance, compilers, security, tooling).
+2. Build one small project per track.
+3. Do not jump across too many tools at once.
+
+TRACK 1: ADVANCED PROFILING AND PERFORMANCE ANALYSIS
+
+Why this matters:
+1. LLVM can optimize code, but you still need real measurements.
+2. Profiling shows where time is actually spent.
+
+Tools:
+1. perf (Linux profiling)
+2. FlameGraph (visualization)
+3. perfetto or hot-spot style profilers (optional)
+
+What to learn:
+1. CPU cycles, cache misses, branch misses, IPC.
+2. Function-level and instruction-level hotspots.
+3. Correlating assembly output to runtime bottlenecks.
+
+Mini project:
+1. Take examples/vectorization or a compute loop.
+2. Profile before/after optimization flags.
+3. Document top bottleneck functions and improvements.
+
+TRACK 2: DETERMINISTIC DEBUGGING
+
+Why this matters:
+1. Hard bugs are timing-sensitive and non-reproducible.
+2. Record/replay debugging saves huge time.
+
+Tools:
+1. rr (record/replay debugger)
+2. gdb/lldb
+
+What to learn:
+1. Recording failing runs.
+2. Reverse execution (step backward).
+3. Watchpoints and instruction-level state tracing.
+
+Mini project:
+1. Introduce controlled bug in a sample C program.
+2. Record with rr and debug backwards to root cause.
+
+TRACK 3: BINARY ANALYSIS AND REVERSE ENGINEERING
+
+Why this matters:
+1. You may need to inspect third-party binaries without source code.
+2. Helps understand emitted code quality and ABI behavior.
+
+Tools:
+1. Ghidra
+2. Radare2 / Cutter
+3. objdump / readelf / nm
+
+What to learn:
+1. Disassembly reading.
+2. Symbol tables, relocations, sections.
+3. Reconstructing high-level logic from assembly.
+
+Mini project:
+1. Compile one example with symbols and stripped variants.
+2. Compare analysis difficulty and recovered structure.
+
+TRACK 4: WEBASSEMBLY AND PORTABLE TARGETS
+
+Why this matters:
+1. WebAssembly is a major modern compilation target.
+2. LLVM toolchain can target WASM.
+
+Tools:
+1. clang with wasm targets
+2. wabt tools (wat2wasm, wasm2wat, wasm-objdump)
+
+What to learn:
+1. WASM module structure.
+2. Stack-based execution model.
+3. Differences from native backend codegen.
+
+Mini project:
+1. Compile a small C file to WASM.
+2. Inspect textual WAT and compare with native assembly intent.
+
+TRACK 5: SYMBOLIC EXECUTION AND PROGRAM ANALYSIS
+
+Why this matters:
+1. Traditional tests cover limited input space.
+2. Symbolic execution explores many execution paths.
+
+Tools:
+1. KLEE
+2. SMT basics (Z3 awareness helpful)
+
+What to learn:
+1. Path constraints.
+2. Input generation for edge cases.
+3. Bug discovery beyond handwritten tests.
+
+Mini project:
+1. Run KLEE on a small branching C program.
+2. Collect generated tests and discovered edge cases.
+
+TRACK 6: FRONTEND/PARSER ENGINEERING
+
+Why this matters:
+1. Compiler work is not only backend optimization.
+2. Practical tooling often starts with parsing and semantic analysis.
+
+Tools:
+1. Tree-sitter
+2. ANTLR or parser combinator libraries (optional)
+
+What to learn:
+1. Grammar design and ambiguity handling.
+2. Incremental parsing.
+3. AST querying and editor integrations.
+
+Mini project:
+1. Build a tiny static checker over parsed syntax trees.
+2. Report simple diagnostics (style or bug-prone patterns).
+
+TRACK 7: LINKERS, LOADERS, AND BINARY FORMAT BASICS
+
+Why this matters:
+1. End-to-end systems understanding requires knowing what happens after codegen.
+2. Critical for large-scale builds and performance tuning.
+
+Tools:
+1. lld / ld
+2. readelf / objdump
+3. patchelf (advanced)
+
+What to learn:
+1. ELF sections, symbols, relocation basics.
+2. Static vs dynamic linking.
+3. Startup code and runtime initialization basics.
+
+Mini project:
+1. Build same program with static and dynamic linking.
+2. Compare binary size and startup behavior.
+
+TRACK 8: COMPILER CORRECTNESS AND VALIDATION
+
+Why this matters:
+1. Optimizations must preserve program semantics.
+2. Correctness work is essential for production compilers.
+
+Tools:
+1. Alive2
+2. LLVM test-suite style testing
+3. differential testing with multiple compilers
+
+What to learn:
+1. Equivalence checking mindset.
+2. Regression test construction.
+3. Minimal repro reduction workflows.
+
+Mini project:
+1. Pick one optimization pattern.
+2. Build tests to validate behavior under multiple flags/versions.
+
+SUGGESTED PATHS BY GOAL
+
+If goal is performance engineering:
+1. Track 1 -> Track 2 -> Track 7
+
+If goal is compiler engineer role:
+1. Track 6 -> Track 8 -> Track 5
+
+If goal is security/reverse engineering:
+1. Track 3 -> Track 2 -> Track 5
+
+If goal is cross-platform toolchain engineer:
+1. Track 4 -> Track 7 -> Track 8
+
+PRACTICAL HABITS TO DEVELOP
+
+1. Always measure before optimizing.
+2. Keep reproducible command logs for experiments.
+3. Pin tool versions when publishing results.
+4. Write short notes for every failed hypothesis.
+5. Build minimal repros for every non-trivial bug.
+
+FINAL OUTCOME
+
+After completing selected next-step tracks, you should be able to:
+1. Profile and optimize real workloads.
+2. Debug low-level issues faster and more reliably.
+3. Understand binaries and linking deeply.
+4. Use advanced analysis tools beyond standard testing.
+5. Operate as a stronger systems/compiler engineer end-to-end.

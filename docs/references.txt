@@ -1,0 +1,99 @@
+LLVM REFERENCES
+
+This file collects high-value references for learning LLVM from fundamentals to advanced topics.
+
+HOW TO USE THIS FILE
+1. Start with OFFICIAL LLVM DOCUMENTATION and OFFICIAL TUTORIALS.
+2. Use STACK OVERFLOW and STACK EXCHANGE for specific blockers.
+3. Use UNIVERSITY MATERIAL for deeper theory and assignments.
+4. Use OPEN SOURCE ARTICLES for practical engineering context.
+5. Revisit this list per roadmap topic instead of reading everything at once.
+
+OFFICIAL LLVM DOCUMENTATION
+1. LLVM Project Home: https://llvm.org/
+2. LLVM Documentation Index: https://llvm.org/docs/
+3. LLVM Language Reference Manual (IR): https://llvm.org/docs/LangRef.html
+4. LLVM Command Guide: https://llvm.org/docs/CommandGuide/
+5. Clang Documentation: https://clang.llvm.org/docs/
+6. LLVM Doxygen API Docs: https://llvm.org/doxygen/
+7. LLVM Programmer's Manual: https://llvm.org/docs/ProgrammersManual.html
+8. LLVM Coding Standards: https://llvm.org/docs/CodingStandards.html
+9. LLVM Getting Started: https://llvm.org/docs/GettingStarted.html
+
+OFFICIAL TUTORIALS
+1. Kaleidoscope Tutorial: https://llvm.org/docs/tutorial/
+2. New Pass Manager (Writing Passes): https://llvm.org/docs/WritingAnLLVMNewPMPass.html
+3. TableGen Fundamentals: https://llvm.org/docs/TableGen/
+4. Writing an LLVM Pass (legacy reference): https://llvm.org/docs/WritingAnLLVMPass.html
+5. Source-Level Debugging with LLVM: https://llvm.org/docs/SourceLevelDebugging.html
+6. Sanitizer documentation (Clang): https://clang.llvm.org/docs/index.html
+
+KEY SOURCE REPOSITORIES
+1. LLVM Monorepo (GitHub): https://github.com/llvm/llvm-project
+2. LLVM Test Suite: https://github.com/llvm/llvm-test-suite
+3. Compiler Explorer source (for understanding online tool workflows): https://github.com/compiler-explorer/compiler-explorer
+
+RECOMMENDED BOOKS
+1. Learn LLVM (latest edition) by Kai Nacke
+2. Getting Started with LLVM Core Libraries by Bruno Cardoso Lopes and Rafael Auler
+3. LLVM Essentials by Suyog Sarda and Mayur Pandey
+4. Engineering a Compiler by Keith Cooper and Linda Torczon
+5. Compilers: Principles, Techniques, and Tools by Aho, Lam, Sethi, and Ullman
+6. Modern Compiler Implementation in C by Andrew W. Appel
+
+STACK EXCHANGE AND STACK OVERFLOW
+1. Stack Overflow (LLVM tag): https://stackoverflow.com/questions/tagged/llvm
+2. Stack Overflow (LLVM-IR tag): https://stackoverflow.com/questions/tagged/llvm-ir
+3. Stack Overflow (Clang tag): https://stackoverflow.com/questions/tagged/clang
+4. Stack Overflow (Compiler Construction tag): https://stackoverflow.com/questions/tagged/compiler-construction
+5. Computer Science Stack Exchange (compilers tag): https://cs.stackexchange.com/questions/tagged/compilers
+6. Software Engineering Stack Exchange: https://softwareengineering.stackexchange.com/
+
+Tips for Q/A platforms:
+1. Include exact clang/opt/llc version in questions.
+2. Provide a minimal reproducer (.c or .ll file).
+3. Include exact command and error output.
+4. Mention target triple when backend behavior differs.
+
+UNIVERSITY ARTICLES AND COURSE MATERIAL
+1. Stanford CS143 (Compilers): https://web.stanford.edu/class/cs143/
+2. Cornell CS6120 (Advanced Compilers): https://www.cs.cornell.edu/courses/cs6120/
+3. University of Wisconsin CS701 (Compiler Construction): https://pages.cs.wisc.edu/~fischer/cs701.f14/
+4. EPFL Compiler Course (archived notes): https://lara.epfl.ch/w/cc18
+5. MIT OpenCourseWare Search (compiler courses): https://ocw.mit.edu/search/?q=compiler
+6. CMU course catalog entry point: https://www.cs.cmu.edu/academic-programs/courses
+
+OPEN SOURCE ARTICLES AND ENGINEERING WRITEUPS
+1. The Architecture of Open Source Applications: LLVM: https://aosabook.org/en/v1/llvm.html
+2. Eli Bendersky's LLVM/Clang Articles: https://eli.thegreenplace.net/tag/llvm
+3. LLVM Blog Archive: https://blog.llvm.org/
+4. Mozilla Engineering (search LLVM/Clang/sanitizers topics): https://hacks.mozilla.org/
+5. LWN.net (search LLVM topics): https://lwn.net/
+6. Red Hat Developer Blog (LLVM/Clang articles): https://developers.redhat.com/
+7. Trail of Bits blog (compiler/security analysis topics): https://blog.trailofbits.com/
+
+TALKS AND CONFERENCE RESOURCES
+1. LLVM Developers' Meeting Talks (YouTube): https://www.youtube.com/@LLVMFoundation
+2. CppCon talks (many Clang/LLVM internals sessions): https://www.youtube.com/@CppCon
+3. EuroLLVM event pages and archives: https://llvm.org/devmtg/
+
+TOOLS FOR PRACTICE AND COMPARISON
+1. Compiler Explorer (Godbolt): https://godbolt.org/
+2. C-Reduce (reduce test cases): https://embed.cs.utah.edu/creduce/
+3. Alive2 (optimization correctness checking): https://alive2.llvm.org/
+4. perf (Linux profiling): https://perf.wiki.kernel.org/
+
+PRACTICAL LEARNING IN THIS REPOSITORY
+1. Roadmap: docs/roadmap.txt
+2. Command Reference: docs/llvm.txt
+3. IR Syntax Notes: docs/ir_syntax.txt
+4. Architecture Notes: docs/flow.txt
+5. Books List: docs/textbooks.txt
+6. Repo Guide: docs/repo.txt
+
+SUGGESTED REFERENCE FLOW BY ROADMAP TOPIC
+1. Topics 1-2: LLVM docs index + LangRef + command guide.
+2. Topics 3-4: LangRef + opt command docs + Compiler Explorer.
+3. Topics 5-7: Clang docs + ABI references + LLVM test cases.
+4. Topics 8-9: Source-level debugging docs + sanitizer docs.
+5. Topics 10-11: New pass manager docs + TableGen docs + LLVM talks.

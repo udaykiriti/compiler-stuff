@@ -1,0 +1,9 @@
+# LLVM Deep Dive
+
+A structured repository for learning the internals of the LLVM compiler infrastructure.
+
+## Overview
+This repository focuses on practical LLVM exploration with hands-on examples across IR generation, optimization, linking, and tooling.
+
+Detailed repository guide, example breakdown, setup, and learning objectives are in:
+- `docs/repo_guide.txt`

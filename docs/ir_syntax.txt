@@ -1,0 +1,223 @@
+LLVM IR SYNTAX GUIDE (PRACTICAL)
+
+Purpose:
+This file helps you read and write LLVM IR (.ll) with confidence.
+Use it with examples from examples/basics, examples/control-flow, and examples/structs.
+
+WHAT LLVM IR IS
+1. A typed intermediate representation between source code and machine code.
+2. Designed for optimization and code generation.
+3. Usually seen as text (.ll) or bitcode (.bc).
+
+BASIC STRUCTURE OF AN IR FILE
+1. Module-level declarations (globals, external functions, type defs).
+2. Function definitions.
+3. Each function contains basic blocks.
+4. Each basic block has instructions and ends with a terminator instruction.
+
+Example structure (conceptual):
+1. module header/target info
+2. global values
+3. define function A { blocks... }
+4. define function B { blocks... }
+
+TYPE SYSTEM
+
+Scalar integer types:
+1. i1 (boolean)
+2. i8, i16, i32, i64 (common integer widths)
+3. i128 (large integer when needed)
+
+Floating-point types:
+1. half
+2. float
+3. double
+4. fp128 (target/use-case dependent)
+
+Pointer and aggregate types:
+1. ptr (opaque pointer in modern LLVM)
+2. arrays: [N x T]
+3. vectors: <N x T>
+4. structs: { T1, T2, ... }
+
+Important rule:
+1. LLVM is strongly typed at instruction level.
+2. Type mismatch is a common source of verifier/parser errors.
+
+VALUES, SSA, AND NAMING
+
+1. IR temporaries use SSA values like %0, %1, %sum, %tmp.
+2. In SSA, each value is assigned once.
+3. Re-assignment creates a new SSA value, not mutation.
+4. Function parameters are already SSA values.
+
+Example idea:
+1. %x1 = add i32 %a, 1
+2. %x2 = add i32 %x1, 1
+
+BASIC BLOCKS AND TERMINATORS
+
+1. A basic block starts with a label (for example, entry:).
+2. It contains linear instructions.
+3. It must end with a terminator:
+   - ret
+   - br
+   - switch
+   - indirectbr
+   - unreachable
+
+Common mistake:
+1. Missing terminator at end of a block.
+
+MEMORY MODEL IN IR
+
+Core instructions:
+1. alloca
+   - Allocates stack memory (usually in entry block).
+2. store
+   - Writes value to memory.
+3. load
+   - Reads value from memory.
+4. getelementptr (GEP)
+   - Computes addresses inside arrays/structs.
+
+Example memory pattern:
+1. %p = alloca i32
+2. store i32 10, ptr %p
+3. %v = load i32, ptr %p
+
+Note:
+1. SSA values are immutable.
+2. Mutable program state is represented through memory operations.
+
+ARITHMETIC AND LOGIC INSTRUCTIONS
+
+Integer arithmetic:
+1. add, sub, mul
+2. udiv/sdiv
+3. urem/srem
+
+Bitwise:
+1. and, or, xor
+2. shl, lshr, ashr
+
+Floating-point arithmetic:
+1. fadd, fsub, fmul, fdiv
+
+Comparisons:
+1. icmp (integer): eq, ne, slt, sgt, ult, ugt, etc.
+2. fcmp (float): oeq, one, olt, ogt, etc.
+
+CONTROL FLOW
+
+Branch instructions:
+1. Unconditional branch:
+   br label %next
+2. Conditional branch:
+   br i1 %cond, label %if_true, label %if_false
+
+Loop representation:
+1. Loop header block with condition check.
+2. Loop body block.
+3. Backedge from body to header.
+4. Exit block when condition fails.
+
+THE PHI NODE (MOST IMPORTANT SSA CONCEPT)
+
+Why phi is needed:
+1. Multiple control-flow paths can reach one block.
+2. You need path-dependent value selection.
+
+Syntax idea:
+1. %x = phi i32 [ %val_from_A, %A ], [ %val_from_B, %B ]
+
+Interpretation:
+1. If control came from A, %x = %val_from_A.
+2. If control came from B, %x = %val_from_B.
+
+Common phi mistakes:
+1. Incoming block label mismatch.
+2. Missing incoming edge for a predecessor.
+3. Using value defined in non-dominating block.
+
+FUNCTIONS, CALLS, AND RETURNS
+
+Function definition:
+1. define <ret_type> @name(<args>) { ... }
+
+Function declaration (external):
+1. declare <ret_type> @name(<args>)
+
+Call:
+1. %r = call i32 @foo(i32 %x)
+
+Return:
+1. ret i32 %r
+2. ret void
+
+GLOBALS, CONSTANTS, AND STRINGS
+
+Global variable example pattern:
+1. @g = global i32 0
+
+Constant global string pattern:
+1. @.str = private unnamed_addr constant [N x i8] c"...\00"
+
+Use with GEP to pass pointer to calls.
+
+COMMON CASTS AND CONVERSIONS
+
+Integer size/sign conversions:
+1. zext (zero extend)
+2. sext (sign extend)
+3. trunc
+
+Pointer/integer conversions:
+1. ptrtoint
+2. inttoptr
+
+Bit reinterpretation:
+1. bitcast
+
+Float/integer conversions:
+1. sitofp, uitofp
+2. fptosi, fptoui
+
+VERIFICATION AND DEBUGGING
+
+Useful checks:
+1. llvm-as input.ll -o input.bc
+   - catches syntax/structural parser errors.
+2. opt -verify input.ll -disable-output
+   - catches IR semantic issues.
+3. llvm-dis input.bc -o roundtrip.ll
+   - inspect normalized text output.
+
+Debug strategy:
+1. Work on small IR snippets.
+2. Validate after each edit.
+3. Compare with clang-generated IR for similar C code.
+
+COMMON BEGINNER ERRORS
+
+1. Type mismatch in add/load/store/call.
+2. Missing terminator instruction.
+3. Invalid phi incoming blocks.
+4. Incorrect GEP indices for nested structs/arrays.
+5. Calling function with wrong signature.
+
+READING PRACTICE ORDER (IN THIS REPO)
+
+1. examples/basics/source.ll
+2. examples/basics/manual.ll
+3. examples/control-flow/loop.ll
+4. examples/structs/structs.ll
+5. examples/intrinsics/intrinsics.ll
+
+QUICK CHECKLIST
+
+1. Can you identify blocks and terminators in any function?
+2. Can you trace data flow through SSA values?
+3. Can you explain one phi node correctly?
+4. Can you decode one GEP expression into field/index access?
+5. Can you assemble and verify your edited IR without errors?

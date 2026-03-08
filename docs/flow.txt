@@ -1,0 +1,155 @@
+HOW LLVM WORKS (FLOW AND ARCHITECTURE)
+
+LLVM is built as a modular compiler infrastructure. It separates source language handling, optimization, and machine code generation into clear phases.
+
+MAIN IDEA
+1. Frontend converts source code into LLVM IR.
+2. Middle-end optimizes LLVM IR with analysis/transformation passes.
+3. Backend lowers optimized IR into target-specific machine code.
+
+This design lets many languages share the same optimizer and backend.
+
+PHASE 1: FRONTEND (LANGUAGE TO IR)
+
+Goal:
+Understand source code and emit valid LLVM IR.
+
+What happens:
+1. Lexical analysis (tokens).
+2. Parsing (syntax tree / AST).
+3. Semantic analysis (type checks, symbol resolution).
+4. IR generation.
+
+Typical tools:
+1. clang (C/C++)
+2. rustc (Rust, emits LLVM IR internally)
+3. swiftc (Swift)
+
+Useful commands:
+1. Generate readable IR from C:
+   clang -S -emit-llvm input.c -o input.ll
+2. Generate bitcode:
+   clang -c -emit-llvm input.c -o input.bc
+
+Common frontend outputs:
+1. .ll (text IR)
+2. .bc (LLVM bitcode)
+
+PHASE 2: MIDDLE-END (IR OPTIMIZATION)
+
+Goal:
+Improve performance, size, or analyzability without changing program behavior.
+
+What happens:
+1. Analysis passes inspect code properties.
+2. Transformation passes rewrite IR.
+3. Pass pipelines run in controlled order.
+
+Typical optimizations:
+1. Constant folding
+2. Dead code elimination
+3. mem2reg (promotes stack slots to SSA registers)
+4. Inlining
+5. Loop transformations (unroll/vectorize depending on conditions)
+
+Typical tool:
+1. opt
+
+Useful commands:
+1. Run O2 optimization on IR:
+   opt -S -O2 input.ll -o optimized.ll
+2. Run specific pass:
+   opt -S -mem2reg input.ll -o promoted.ll
+3. Inspect pass behavior (version-dependent options):
+   opt -O2 -disable-output -debug-pass-manager input.ll
+
+PHASE 3: BACKEND (IR TO MACHINE CODE)
+
+Goal:
+Lower optimized IR into machine instructions for a specific target CPU.
+
+What happens:
+1. Instruction selection
+2. Register allocation
+3. Instruction scheduling
+4. Emission of assembly/object code
+
+Typical tool:
+1. llc
+
+Useful commands:
+1. Emit assembly from IR:
+   llc optimized.ll -o output.s
+2. Emit object file:
+   llc -filetype=obj optimized.ll -o output.o
+
+CORE CONCEPT: LLVM IR
+
+LLVM IR is the shared representation between frontend, optimizer, and backend.
+
+Key properties:
+1. Typed instructions (for example i32, i64, float, ptr).
+2. SSA-based value model.
+3. Explicit control flow with basic blocks and terminators.
+4. Low-level enough for machine mapping, high-level enough for optimization.
+
+Simple IR example:
+1. Function arguments are values.
+2. Arithmetic creates new SSA values.
+3. Return instruction terminates function path.
+
+Why SSA matters:
+1. Every SSA value is assigned once.
+2. Data flow tracking becomes easier.
+3. Optimizers can reason about dependencies safely.
+
+END-TO-END FLOW (PRACTICAL)
+
+1. Source file:
+   input.c
+2. Frontend output:
+   input.ll or input.bc
+3. Optimized IR:
+   optimized.ll
+4. Target assembly/object:
+   output.s or output.o
+5. Linker creates executable from object files.
+
+Minimal pipeline commands:
+1. clang -S -emit-llvm input.c -o input.ll
+2. opt -S -O2 input.ll -o optimized.ll
+3. llc optimized.ll -o output.s
+4. clang output.s -o app
+
+WHY LLVM'S DESIGN IS POWERFUL
+
+1. Reusability:
+   - New language frontend can reuse existing optimizer and backends.
+2. Portability:
+   - New backend enables many languages on a new architecture.
+3. Modularity:
+   - Passes and pipelines can be customized.
+4. Ecosystem:
+   - Tools like clang, opt, llc, lld, and sanitizers integrate cleanly.
+
+COMMON BEGINNER MISTAKES
+
+1. Running opt directly on .c files.
+2. Confusing .ll and .bc formats.
+3. Assuming identical IR output across LLVM versions.
+4. Forgetting target triple differences when comparing codegen.
+
+DEBUGGING TIPS
+
+1. Keep unoptimized IR and optimized IR side by side.
+2. Use small test inputs to isolate pass effects.
+3. Pin LLVM version when documenting results.
+4. Validate each phase before moving to next phase.
+
+QUICK CHECKLIST
+
+1. Can you generate IR from source? (clang)
+2. Can you optimize IR? (opt)
+3. Can you emit assembly/object from IR? (llc)
+4. Can you explain one optimization by comparing before/after IR?
+5. Can you explain why SSA helps optimization?
