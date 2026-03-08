@@ -1,22 +1,25 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Tell Linguist to include all files in examples/
+examples/**  linguist-vendored=false linguist-detectable=true
+
 # Source code
-*.c     text eol=lf
-*.cpp   text eol=lf
-*.h     text eol=lf
-*.java  text eol=lf
-*.py    text eol=lf
-*.rs    text eol=lf
-*.sh    text eol=lf
+*.c     text eol=lf linguist-detectable=true
+*.cpp   text eol=lf linguist-detectable=true
+*.h     text eol=lf linguist-detectable=true
+*.java  text eol=lf linguist-detectable=true
+*.py    text eol=lf linguist-detectable=true
+*.rs    text eol=lf linguist-detectable=true
+*.sh    text eol=lf linguist-detectable=true
 
 # LLVM IR / TableGen
-*.ll    text eol=lf linguist-detectable=true linguist-language=LLVM
-*.td    text eol=lf linguist-detectable=true linguist-language=TableGen
+*.ll    text eol=lf linguist-detectable=true linguist-generated=false linguist-language=LLVM
+*.td    text eol=lf linguist-detectable=true linguist-generated=false linguist-language=TableGen
 
 # Docs / config
-*.md    text eol=lf
-*.txt   text eol=lf
+*.md    text eol=lf linguist-documentation=true
+*.txt   text eol=lf linguist-documentation=true
 
 # Binaries
 *.o     binary
