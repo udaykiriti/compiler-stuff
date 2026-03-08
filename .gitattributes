@@ -11,8 +11,8 @@
 *.sh    text eol=lf
 
 # LLVM IR / TableGen
-*.ll    text eol=lf
-*.td    text eol=lf
+*.ll    text eol=lf linguist-detectable=true linguist-language=LLVM
+*.td    text eol=lf linguist-detectable=true linguist-language=TableGen
 
 # Docs / config
 *.md    text eol=lf
