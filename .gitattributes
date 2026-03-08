@@ -2,7 +2,7 @@
 * text=auto
 
 # Force Linguist to include everything in examples/
-examples/**  linguist-vendored=false
+examples/**  linguist-vendored=false linguist-documentation=false
 
 # LLVM IR / TableGen need explicit language hints
 *.ll    linguist-detectable=true linguist-language=LLVM
