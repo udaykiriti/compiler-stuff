@@ -1,0 +1,11 @@
+papers
+======
+
+basics/
+------
+
+1] “An Incremental Approach to Compiler Construction” by Abdulaziz Ghuloum (2006).
+    - http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf
+
+2] “Essentials of Compilation: An Incremental Approach” by Jeremy G. Siek and Ryan R. Newton (2019).
+    - https://www.brinckerhoff.org/clements/2194-csc431/essentials-of-compilation.pdf
