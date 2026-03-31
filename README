@@ -1,11 +1,13 @@
-LLVM [flow]
+compiler [flow]
 ===========
 
-A structured repository for learning the internals of the LLVM compiler infrastructure.
+A structured repository for learning the internals of the compiler infrastructure,
+using *LLVM* as the primary backend.
 
 Overview
 --------
-This repository focuses on practical LLVM exploration with hands-on examples 
-across IR generation, optimization, linking, and tooling.
+- This repository focuses on understanding core compiler concepts, LLVM exploration,
+  across IR generation, optimization, linking, and tooling.
+- From some standard base papers.
 
 /* for reference go through docs/ */
