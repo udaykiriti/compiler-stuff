@@ -9,3 +9,11 @@ basics/
 
 2] “Essentials of Compilation: An Incremental Approach” by Jeremy G. Siek and Ryan R. Newton (2019).
     - https://www.brinckerhoff.org/clements/2194-csc431/essentials-of-compilation.pdf
+
+llvms/
+-----
+
+1] Introdunction to *LLVM*
+
+2] LLVM : A compilation framework for lifelong Program Analysis & Transformation. [2004-01-30-CGO-LLVM]
+    - https://llvm.org/pubs/2004-01-30-CGO-LLVM.html
