@@ -19,7 +19,223 @@ basics/
 llvms/
 -----
 
-1] Introdunction to *LLVM*
+1] Introduction to *LLVM*
 
 2] LLVM : A compilation framework for lifelong Program Analysis & Transformation. [2004-01-30-CGO-LLVM]
     - https://llvm.org/pubs/2004-01-30-CGO-LLVM.html
+
+3] LLVM Official Documentation
+    - https://llvm.org/docs/
+
+4] LLVM Language Reference Manual
+    - https://llvm.org/docs/LangRef/
+
+x86_64/
+-------
+
+1] AMD64 Architecture Programmer's Manual
+    - https://www.amd.com/system/files/TechDocs/24592.pdf
+
+2] Intel 64 and IA-32 Architectures Software Developer Manuals
+    - https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
+
+3] System V AMD64 ABI Specification
+    - https://github.com/hjl-tools/x86-psABI/wiki/X86-psABI
+
+4] x86-64 Instruction Set Reference
+    - https://www.felixcloutier.com/x86/
+
+optimization/
+--------------
+
+1] "Engineering a Compiler" by Cooper & Torczon (2nd Edition, 2011)
+    - Classic resource on optimization techniques
+
+2] "Advanced Compiler Design and Implementation" by Muchnick (1997)
+    - Comprehensive coverage of optimization passes
+
+3] SSA (Static Single Assignment) Form
+    - https://en.wikipedia.org/wiki/Static_single_assignment_form
+
+4] LLVM Optimization Passes
+    - https://llvm.org/docs/Passes/
+
+code-generation/
+----------------
+
+1] "Code Generation for RISC and CISC" - Overview
+    - https://en.wikipedia.org/wiki/Code_generation_(compiler)
+
+2] Register Allocation Techniques
+    - Graph coloring and linear scan approaches
+
+3] Instruction Selection & Scheduling
+    - https://llvm.org/docs/CodeGenerator/
+
+tools-and-frameworks/
+---------------------
+
+1] LLVM Project
+    - https://llvm.org/
+
+2] Clang Frontend
+    - https://clang.llvm.org/
+
+3] LLVM IR Playground
+    - https://godbolt.org/
+
+4] Compiler Explorer
+    - https://gcc.godbolt.org/
+
+parser-and-lexer/
+-----------------
+
+1] "Crafting Interpreters" - Lexing & Parsing Chapter
+    - https://craftinginterpreters.com/
+
+2] Introduction to Compiler Design - Parsing Techniques
+    - Recursive descent, LL parsing, LR parsing
+
+3] Flex & Bison Documentation
+    - https://www.gnu.org/software/bison/manual/
+
+4] ANTLR Parser Generator
+    - https://www.antlr.org/
+
+type-systems-and-semantics/
+---------------------------
+
+1] "Types and Programming Languages" by Benjamin C. Pierce (2002)
+    - Comprehensive type system theory
+
+2] "Practical Foundations for Programming Languages" by Robert Harper (2016)
+    - https://www.cs.cmu.edu/~rwh/pfpl/
+
+3] Type Checking & Inference Algorithms
+    - Hindley-Milner type inference, unification
+
+4] Polymorphism & Generics
+    - Parametric, ad-hoc, and row polymorphism
+
+program-analysis/
+-----------------
+
+1] "Principles of Program Analysis" by Flemming Nielson et al. (2015)
+    - Data flow analysis, abstract interpretation
+
+2] LLVM Analysis Framework
+    - https://llvm.org/docs/Passes/#analysis
+
+3] Control Flow Graphs (CFG)
+    - https://en.wikipedia.org/wiki/Control_flow_graph
+
+4] Abstract Interpretation & Static Analysis
+    - https://en.wikipedia.org/wiki/Abstract_interpretation
+
+memory-management/
+------------------
+
+1] "Garbage Collection: Algorithms for Automatic Dynamic Memory Management" by Wilfrid Marshall (2004)
+    - https://www.elsevier.com/books/garbage-collection/marshall/978-0-12-417156-5
+
+2] Mark-Sweep, Generational, and Concurrent GC
+    - Reference counting, tri-color marking
+
+3] Memory Safety in Rust
+    - https://doc.rust-lang.org/nomicon/
+
+4] Arena Allocation & Object Pools
+    - Memory efficiency techniques
+
+debugging-and-profiling/
+------------------------
+
+1] DWARF Debugging Information Format
+    - https://dwarfstd.org/
+
+2] LLVM Debug Info
+    - https://llvm.org/docs/SourceLevelDebugging/
+
+3] Profiling Techniques
+    - Sampling, instrumentation, call stack analysis
+
+4] perf & Linux Profiling Tools
+    - https://perf.wiki.kernel.org/
+
+functional-compilers/
+---------------------
+
+1] "Implementing Functional Languages" by Simon Peyton Jones & David Lester (1992)
+    - https://www.microsoft.com/en-us/research/publication/implementing-functional-languages-a-tutorial/
+
+2] GHC (Glasgow Haskell Compiler) Architecture
+    - https://gitlab.haskell.org/ghc/ghc/-/wikis/home
+
+3] OCaml Compiler Design
+    - https://ocaml.org/docs
+
+4] Compilation of Lazy Languages
+    - Strictness analysis, graph reduction
+
+runtime-systems/
+-----------------
+
+1] "Virtual Machine Design and Implementation" by Smith & Nair (2005)
+    - JIT compilation, bytecode interpretation
+
+2] Java Virtual Machine Specification
+    - https://docs.oracle.com/javase/specs/jvms/se19/html/
+
+3] LLVM JIT Compilation (MCJIT)
+    - https://llvm.org/docs/MCJITDesignAndImplementation/
+
+4] Runtime Optimization & Adaptive Compilation
+    - On-stack replacement, tiered compilation
+
+performance-tuning/
+--------------------
+
+1] "Computer Architecture: A Quantitative Approach" by Hennessy & Patterson (2017)
+    - CPU caches, pipelining, branch prediction
+
+2] "Systems Performance: Enterprise and the Cloud" by Brendan Gregg (2013)
+    - Profiling, tuning, optimization strategies
+
+3] CPU Microarchitecture Guides
+    - Intel, AMD processor optimization manuals
+
+4] Cache-Conscious Compilation
+    - Memory hierarchy awareness, prefetching
+
+formal-verification/
+---------------------
+
+1] CompCert: A Formally Verified C Compiler
+    - https://compcert.org/
+
+2] Coq Proof Assistant & Formal Verification
+    - https://coq.inria.fr/
+
+3] "Certified Programming with Dependent Types" by Adam Chlipala
+    - https://adam.chlipala.net/cpdt/
+
+4] Theorem Proving for Compiler Correctness
+    - Mechanized proofs of compiler transformations
+
+language-specific-compilers/
+-----------------------------
+
+1] Rust Compiler (rustc) Design
+    - https://rustc-dev-guide.rust-lang.org/
+
+2] Go Compiler & Runtime Architecture
+    - https://golang.org/src/cmd/compile/
+
+3] Swift Compiler Architecture
+    - https://www.swift.org/compiler-stdlib/
+
+4] V Language Compiler
+    - https://github.com/vlang/v
+
+5] Zig Compiler Design
+    - https://github.com/ziglang/zig/blob/master/doc/langref.md
