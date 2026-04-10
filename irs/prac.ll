@@ -1,37 +1,35 @@
-; Combined LLVM IR practice file
-; Contains a simple add function, a loop example, and a main entry point.
+@s = private unnamed_addr constant [13 x i8] c"Hello World\0A\00"
 
-define i32 @my_add(i32 %a, i32 %b) {
-entry:
-  %result = add i32 %a, %b
-  ret i32 %result
+declare i32 @printf(ptr, ...)
+
+define i32 @add(i32 %x, i32 %y) {
+a:
+  %z = add i32 %x, %y
+  ret i32 %z
 }
 
-define i32 @sum_loop(i32 %count) {
-entry:
-  %cmp_initial = icmp sle i32 %count, 0
-  br i1 %cmp_initial, label %done, label %loop_header
+define i32 @sub(i32 %x, i32 %y) {
+a:
+  %z = sub i32 %x, %y
+  ret i32 %z
+}
 
-loop_header:
-  br label %loop_body
-
-loop_body:
-  %idx = phi i32 [ 0, %loop_header ], [ %next_idx, %loop_body ]
-  %running_sum = phi i32 [ 0, %loop_header ], [ %next_sum, %loop_body ]
-  %next_sum = add i32 %running_sum, %idx
-  %next_idx = add i32 %idx, 1
-  %continue = icmp slt i32 %next_idx, %count
-  br i1 %continue, label %loop_body, label %done
-
-done:
-  %final_result = phi i32 [ 0, %entry ], [ %next_sum, %loop_body ]
-  ret i32 %final_result
+define i32 @mul(i32 %x, i32 %y) {
+a:
+  %z = mul i32 %x, %y
+  ret i32 %z
 }
 
 define i32 @main() {
-entry:
-  %add_result = call i32 @my_add(i32 10, i32 5)
-  %loop_result = call i32 @sum_loop(i32 10)
-  %total = add i32 %add_result, %loop_result
-  ret i32 %total
+a:
+  %p = getelementptr inbounds [13 x i8], ptr @s, i32 0, i32 0
+  call i32 (ptr, ...) @printf(ptr %p)
+
+  %b = call i32 @add(i32 10, i32 5)
+  %c = call i32 @sub(i32 10, i32 5)
+  %d = call i32 @mul(i32 10, i32 5)
+  %e = add i32 %b, %c
+  %f = add i32 %e, %d
+
+  ret i32 %f
 }
