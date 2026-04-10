@@ -1,13 +1,13 @@
-; Declare the puts function from C
+;puts function from C
 declare i32 @puts(i8*)
 
-; Define main function
+;main func
 define i32 @main() {
 entry:
-    ; Create string "Hello World"
+    ;str"Hello World"
     %str = getelementptr [12 x i8], [12 x i8]* @msg, i32 0, i32 0
 
-    ; Call puts
+    ;puts
     call i32 @puts(i8* %str)
 
     ; Return 0
